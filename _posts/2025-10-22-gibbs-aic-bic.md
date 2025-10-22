@@ -13,7 +13,13 @@ author: Papay Ivan
 
 ## Motivation
 
-Classical model selection criteria—**AIC** and **BIC**—fail in the **over-parameterized regime** (\(p > n\)), where models interpolate training data perfectly yet generalize well (the *double descent* phenomenon). This paper proposes **Gibbs-based AIC and BIC**, grounded in **information-theoretic analysis** of the **Gibbs algorithm**, which remain valid even when \(p \gg n\).
+Classical model selection criteria—**AIC** and **BIC**—break down in the **over-parameterized regime** (\(p > n\)), where models perfectly interpolate training data yet still generalize well (the *double descent* phenomenon). This occurs because:
+
+- The asymptotic normality of MLE fails,
+- Laplace approximation (used in BIC) becomes invalid,
+- There are infinitely many interpolating solutions.
+
+To address this, the authors propose **Gibbs-based AIC and BIC**, derived from an **information-theoretic analysis** of the **Gibbs algorithm**. These criteria remain well-defined even when \(p \gg n\).
 
 ---
 
@@ -21,81 +27,103 @@ Classical model selection criteria—**AIC** and **BIC**—fail in the **over-pa
 
 ### 1. Gibbs Algorithm
 
-Instead of point estimates (e.g., MLE), the Gibbs algorithm defines a **posterior distribution** over parameters:
+Instead of a point estimate like MLE, the **Gibbs algorithm** defines a posterior distribution over parameters:
 
 \[
 P_{W|S}(w|s) = \frac{\pi(w) \exp(-\beta L_E(w, s))}{\mathbb{E}_\pi[\exp(-\beta L_E(W, s))]},
 \]
 
 where:
-- \(\pi(w)\) is a prior,
-- \(L_E(w, s)\) is empirical risk,
-- \(\beta > 0\) controls the "temperature".
+- \(\pi(w)\) is a prior (e.g., Gaussian),
+- \(L_E(w, s) = \frac{1}{n} \sum_{i=1}^n \ell(w, z_i)\) is empirical risk,
+- \(\beta > 0\) is an inverse-temperature parameter.
 
 This distribution minimizes the **Information Risk**:
 \[
-\min_{P_{W|S}} \mathbb{E}[L_E(W,S)] + \frac{1}{\beta} D(P_{W|S} \| \pi | P_S).
+\min_{P_{W|S}} \mathbb{E}[L_E(W,S)] + \frac{1}{\beta} D(P_{W|S} \| \pi \mid P_S).
 \]
+
+In practice, samples from this distribution can be obtained via **SGLD** or **MALA**.
+
+---
 
 ### 2. Gibbs-Based AIC
 
-The expected generalization error of the Gibbs algorithm is:
+The expected generalization error of the Gibbs algorithm is exactly:
 
 \[
-\text{gen}(P_{W|S}, P_S) = \frac{I_{\text{SKL}}(P_{W|S}, P_S)}{\beta},
+\mathrm{gen}(P_{W|S}, P_S) = \frac{I_{\mathrm{SKL}}(P_{W|S}, P_S)}{\beta},
 \]
 
-where \(I_{\text{SKL}}\) is the **symmetrized KL information**. This leads to:
+where \(I_{\mathrm{SKL}}\) is the **symmetrized KL information**:
+\[
+I_{\mathrm{SKL}}(P_{W,S}) = D(P_{W,S} \| P_W \otimes P_S) + D(P_W \otimes P_S \| P_{W,S}).
+\]
+
+This leads to the **Gibbs-based AIC**:
 
 \[
-\boxed{\text{AIC}^+ = L_E(\hat{w}_{\text{Gibbs}}, z^n) + \frac{1}{\beta} I_{\text{SKL}}(P_{W|S}, P_S)}
+\boxed{\mathrm{AIC}^+ = L_E(\hat{w}_{\mathrm{Gibbs}}, z^n) + \frac{1}{\beta} I_{\mathrm{SKL}}(P_{W|S}, P_S)}.
 \]
 
-In the classical regime (\(n \to \infty, p\) fixed, \(\beta = n\)), this recovers:
+In the classical regime (\(n \to \infty\), \(p\) fixed, \(\beta = n\)):
 \[
-\text{AIC}^+ \to L_E + \frac{p}{n}.
+\mathrm{AIC}^+ \to L_E + \frac{p}{n},
 \]
+recovering the standard AIC (up to scaling).
+
+---
 
 ### 3. Gibbs-Based BIC
 
-For log-loss and \(\beta = n\), the negative log-marginal likelihood becomes:
+For log-loss and \(\beta = n\), the negative log-marginal likelihood satisfies:
 
 \[
 -\frac{1}{n} \log m(z^n) = \mathbb{E}_{P_{W|S}}[L_E(W, z^n)] + \frac{1}{n} D(P_{W|S} \| \pi).
 \]
 
-This motivates two versions:
+This motivates two variants:
 
 \[
 \begin{aligned}
-\text{BIC}^+ &= L_E(\hat{w}_{\text{Gibbs}}, z^n) + \frac{1}{n} D(P_{W|S} \| \pi), \\
-\text{BIC}^- &= \mathbb{E}_\pi[L_E(W, z^n)] - \frac{1}{n} D(\pi \| P_{W|S}).
+\mathrm{BIC}^+ &= L_E(\hat{w}_{\mathrm{Gibbs}}, z^n) + \frac{1}{n} D(P_{W|S} \| \pi), \\
+\mathrm{BIC}^- &= \mathbb{E}_\pi[L_E(W, z^n)] - \frac{1}{n} D(\pi \| P_{W|S}).
 \end{aligned}
 \]
 
-In the classical regime, \(\text{BIC}^+ \to L_E + \frac{p \log n}{2n}\).
+In the classical regime:
+\[
+\mathrm{BIC}^+ \to L_E + \frac{p \log n}{2n},
+\]
+matching the traditional BIC.
 
 ---
 
 ## Over-Parameterized Regime: Random Feature Model
 
-In the **Random Feature (RF) model**:
+The authors analyze the **Random Feature (RF) model**:
 \[
-g(x) = f\left(\frac{x^\top F}{\sqrt{d}}\right) w,
+g(x) = f\left( \frac{x^\top F}{\sqrt{d}} \right) w,
 \]
-with \(F_{ij} \sim \mathcal{N}(0,1)\), the Gibbs posterior is Gaussian:
+where \(F \in \mathbb{R}^{d \times p}\) has i.i.d. \(\mathcal{N}(0,1)\) entries, and \(f\) is an activation (e.g., ReLU).
+
+With a Gaussian prior \(w \sim \mathcal{N}(0, \frac{\sigma^2}{\lambda n} I)\), the Gibbs posterior is also Gaussian:
 \[
-P_{W|S} \sim \mathcal{N}(\hat{w}_\lambda, \Sigma_w),
+P_{W|S} \sim \mathcal{N}(\hat{w}_\lambda, \Sigma_w), \quad \hat{w}_\lambda = (\lambda n I + B^\top B)^{-1} B^\top y,
 \]
-where \(\hat{w}_\lambda = (\lambda n I + B^\top B)^{-1} B^\top y\).
+where \(B = f(X F / \sqrt{d}) \in \mathbb{R}^{n \times p}\).
 
-Using **random matrix theory**, the KL divergence admits a closed form. As \(n, p \to \infty\) with \(r = p/n\) fixed:
+Using **random matrix theory** (Marchenko–Pastur law), as \(n, p \to \infty\) with \(r = p/n\) fixed:
 
 \[
-\text{BIC}^+ = L_E(\hat{w}_{\text{Gibbs}}) + \underbrace{\frac{\lambda}{2\sigma^2} \|\hat{w}_\lambda\|_2^2}_{\ell_2\text{ term}} + \underbrace{\frac{1}{2} V(1/\lambda, r) - \frac{\lambda}{8} F(1/\lambda, r)}_{\text{covariance term}},
+\mathrm{BIC}^+ = L_E(\hat{w}_{\mathrm{Gibbs}}) + 
+\underbrace{\frac{\lambda}{2\sigma^2} \|\hat{w}_\lambda\|_2^2}_{\ell_2\text{ term}} +
+\underbrace{\frac{1}{2} V(1/\lambda, r) - \frac{\lambda}{8} F(1/\lambda, r)}_{\text{covariance term}},
 \]
 
-where \(F\) and \(V\) are explicit functions derived from the Marchenko–Pastur law.
+where:
+- \(F(\gamma, r) = \left( \sqrt{\gamma}(1+\sqrt{r})^2 + 1 - \sqrt{\gamma}(1-\sqrt{r})^2 + 1 \right)^2\),
+- \(V(\gamma, r) = r \log\left(1 + \gamma - \frac{1}{4}F(\gamma, r)\right) - \frac{\gamma}{4} F(\gamma, r) + \log\left(1 + \gamma r - \frac{1}{4}F(\gamma, r)\right)\).
 
 ---
 
@@ -103,33 +131,34 @@ where \(F\) and \(V\) are explicit functions derived from the Marchenko–Pastur
 
 ### Double Descent vs. Marginal Likelihood
 
-- **AIC⁺** (generalization error proxy) exhibits **double descent**.
-- **BIC⁺** (marginal likelihood proxy) **does not** — it monotonically decreases or plateaus.
+- **AIC⁺** (proxy for generalization error) exhibits **double descent**.
+- **BIC⁺** (proxy for marginal likelihood) **does not** — it decreases monotonically.
 
-This reveals a **fundamental mismatch** between generalization and marginal likelihood in over-parameterized settings.
+This reveals a **fundamental mismatch**: models with best generalization are **not** those with highest marginal likelihood.
 
 ![Double descent and BIC comparison](/assets/images/double_descent.jpg)
 
-### Role of the Prior
+### Role of the Prior (\(\lambda\))
 
-The hyperparameter \(\lambda\) (from Gaussian prior \(w \sim \mathcal{N}(0, \sigma^2/(\lambda n) I)\)) strongly influences both BIC⁺ and generalization:
+The prior variance (controlled by \(\lambda\)) critically shapes behavior:
 
 - Smaller \(\lambda\) → flatter posterior → smaller \(\ell_2\) norm → better generalization.
-- But BIC⁺ penalizes large \(\lambda\) more heavily.
+- But **BIC⁺ penalizes large \(\lambda\) more heavily**, leading to different model preferences.
 
 ![KL divergence vs generalization](/assets/images/kl_div.jpg)
 
 ### Decomposition of BIC⁺ Penalty
 
-The penalty in BIC⁺ consists of:
-1. \(\ell_2\) norm of weights (decreases with \(p\)),
-2. Covariance term (captures eigenstructure of \(B^\top B\)).
+The penalty in BIC⁺ splits into:
+1. **\(\ell_2\) term**: decreases with \(p\) (favors over-parameterization),
+2. **Covariance term**: captures spectral properties of \(B^\top B\).
 
 ![Covariance divergence term](/assets/images/cov_div.jpg)
 
 ### Model Selection Performance
 
-Classical BIC fails to select over-parameterized models, while **Gibbs-based BIC⁺ correctly favors large \(p\)**.
+- **Classical BIC** incorrectly favors moderate \(p\).
+- **Gibbs-based BIC⁺** correctly selects large \(p\), aligning with low test error.
 
 ![BIC comparison across criteria](/assets/images/BIC_comparison.jpg)
 
@@ -139,20 +168,20 @@ Classical BIC fails to select over-parameterized models, while **Gibbs-based BIC
 
 ## Conclusion
 
-- **Gibbs-based AIC/BIC** unify classical and modern regimes via **information theory**.
-- They remain **well-defined** even when MLE is non-unique (\(p > n\)).
-- **Marginal likelihood (BIC) ≠ generalization (AIC)** in over-parameterized settings — a crucial insight for model selection.
-- The **choice of prior** (\(\lambda\)) critically affects both criteria.
+- **Gibbs-based AIC/BIC** provide a **unified framework** for model selection in both classical and over-parameterized regimes.
+- They remain **well-defined** even when MLE is non-unique.
+- **Marginal likelihood (BIC) ≠ generalization error (AIC)** in over-parameterized settings — a key insight for modern ML.
+- The **choice of prior** (\(\lambda\)) is not just regularization: it fundamentally alters model selection.
 
-This framework offers a principled way to understand **double descent**, **interpolation**, and **Bayesian model selection** in deep learning.
+This work bridges **information theory**, **Bayesian inference**, and **deep learning phenomena** like double descent.
 
 ---
 
 ## References
 
-- Chen, H., Bu, Y., & Wornell, G. W. (2023). *Gibbs-Based Information Criteria and the Over-Parameterized Regime*. arXiv:2306.05583.
-- Watanabe, S. (2013). *A Widely Applicable Bayesian Information Criterion*.
-- Belkin, M., et al. (2019). *Reconciling modern machine learning and the bias-variance tradeoff*.
+- Chen, H., Bu, Y., & Wornell, G. W. (2023). *Gibbs-Based Information Criteria and the Over-Parameterized Regime*. arXiv:2306.05583.  
+- Watanabe, S. (2013). *A Widely Applicable Bayesian Information Criterion*. JMLR.  
+- Belkin, M., et al. (2019). *Reconciling modern machine learning and the bias-variance tradeoff*. PNAS.
 
 ---
 
