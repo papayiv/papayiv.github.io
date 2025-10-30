@@ -71,6 +71,8 @@ $$
 
 In practice, samples from this distribution can be obtained via **SGLD** or **MALA**.
 
+![Sample-wise comparison](/assets/images/sample_comparison.jpg)
+
 ---
 
 ### 2. Gibbs-Based AIC
@@ -179,6 +181,8 @@ This reveals a **fundamental mismatch**: models with best generalization are **n
 
 ![Double descent and BIC comparison](/assets/images/double_descent.jpg)
 
+On this picture BIC exhibits double descent behavior while BIC+ not.
+
 ### Role of the Prior ($\lambda$)
 
 The prior variance (controlled by $\lambda$) critically shapes behavior:
@@ -187,6 +191,9 @@ The prior variance (controlled by $\lambda$) critically shapes behavior:
 - But **BIC⁺ penalizes large $\lambda$ more heavily**.
 
 ![KL divergence vs generalization](/assets/images/kl_div.jpg)
+
+A comparison between the KL-divergence term in BIC+ (left) and the generalization error
+ term in AIC+ (right) with varying λ.
 
 ### Decomposition of BIC⁺ Penalty
 
@@ -203,7 +210,8 @@ The penalty in BIC⁺ splits into:
 
 ![BIC comparison across criteria](/assets/images/BIC_comparison.jpg)
 
-![Sample-wise comparison](/assets/images/sample_comparison.jpg)
+A comparison between different BICs in over-parameterized RF model when λ = 0.001
+ (left); A comparison between BIC+ (middle) and population risk (right) with varying λ.
 
 ---
 
