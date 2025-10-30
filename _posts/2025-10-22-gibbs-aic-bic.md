@@ -33,22 +33,22 @@ Before diving into the results, let us clarify the core concepts used throughout
   $$
   \mathrm{AIC} = L_E + \frac{p}{n},
   $$  
-  where \(L_E\) is empirical risk, \(p\) is the number of model parameters, and \(n\) is the number of samples.
+  where $L_E$ is empirical risk, p is the number of model parameters, and n is the number of samples.
 
 - **BIC (Bayesian Information Criterion)**: A criterion that approximates the **log marginal likelihood** of the data under a model. Classically:  
   $$
   \mathrm{BIC} = L_E + \frac{p \log n}{2n}.
   $$
 
-- **Double descent**: A phenomenon where test error first decreases, then increases (classical U-shaped curve), and **decreases again** once the model becomes **over-parameterized** (\(p > n\)) and can perfectly interpolate the training data.
+- **Double descent**: A phenomenon where test error first decreases, then increases (classical U-shaped curve), and **decreases again** once the model becomes **over-parameterized** (p > n) and can perfectly interpolate the training data.
 
-- **\(p\)**: Number of trainable parameters in the model (e.g., weights in the second layer of a random feature model).
+- **p**: Number of trainable parameters in the model (e.g., weights in the second layer of a random feature model).
 
 - **SGLD (Stochastic Gradient Langevin Dynamics)**: A sampling algorithm that adds Gaussian noise to SGD updates to approximate samples from the **Gibbs posterior**.
 
 - **MALA (Metropolis-Adjusted Langevin Algorithm)**: A more sophisticated Markov Chain Monte Carlo method that also samples from the Gibbs posterior, but with a Metropolis-Hastings correction step for faster convergence.
 
-In the **classical regime** (\(p \ll n\)), AIC and BIC work well. But in the **over-parameterized regime** (\(p \gg n\)), they break down—this paper proposes **Gibbs-based AIC and BIC** that remain valid in both settings.
+In the **classical regime** (p << n), AIC and BIC work well. But in the **over-parameterized regime** (p >> n), they break down—this paper proposes **Gibbs-based AIC and BIC** that remain valid in both settings.
 
 ### 1. Gibbs Algorithm
 
