@@ -7,7 +7,7 @@ author: Papay Ivan
 
 # Gibbs-Based Information Criteria and the Over-Parameterized Regime
 
-*Based on the paper by Haobo Chen, Yuheng Bu, and Gregory W. Wornell (arXiv:2306.05583)*
+*Based on the [paper](https://arxiv.org/pdf/2306.05583) by Haobo Chen, Yuheng Bu, and Gregory W. Wornell (arXiv:2306.05583)*
 
 ---
 
@@ -44,11 +44,17 @@ Before diving into the results, let us clarify the core concepts used throughout
 
 - **p**: Number of trainable parameters in the model (e.g., weights in the second layer of a random feature model).
 
-- **SGLD (Stochastic Gradient Langevin Dynamics)**: A sampling algorithm that adds Gaussian noise to SGD updates to approximate samples from the **Gibbs posterior**.
+- **[SGLD (Stochastic Gradient Langevin Dynamics)](https://arxiv.org/pdf/1702.03849)**: A sampling algorithm that adds Gaussian noise to SGD updates to approximate samples from the **Gibbs posterior**.
 
-- **MALA (Metropolis-Adjusted Langevin Algorithm)**: A more sophisticated Markov Chain Monte Carlo method that also samples from the Gibbs posterior, but with a Metropolis-Hastings correction step for faster convergence.
+- **w**: model weights
 
-In the **classical regime** (p << n), AIC and BIC work well. But in the **over-parameterized regime** (p >> n), they break down—this paper proposes **Gibbs-based AIC and BIC** that remain valid in both settings.
+- **n**: sample size
+
+- **s**: samples from $(X_i, y_i)$
+
+- **[MALA (Metropolis-Adjusted Langevin Algorithm)](https://arxiv.org/pdf/1801.02309)**: A more sophisticated Markov Chain Monte Carlo method that also samples from the Gibbs posterior, but with a Metropolis-Hastings correction step for faster convergence.
+
+In the **classical regime** ($p \ll n$), AIC and BIC work well. But in the **over-parameterized regime** ($p \gg n$), they break down—this paper proposes **Gibbs-based AIC and BIC** that remain valid in both settings.
 
 ### 1. Gibbs Algorithm
 
@@ -71,7 +77,9 @@ $$
 
 In practice, samples from this distribution can be obtained via **SGLD** or **MALA**.
 
-![Sample-wise comparison](/assets/images/sample_comparison.jpg)
+![Sample-wise comparison](/assets/images/sample_comparison.jpg){width="800" height="600"}
+
+The training MSE losses of MALA and SGLD are presented on the left image, with a comparative analysis of their $L_2$ norms shown on the right image.
 
 ---
 
@@ -181,6 +189,9 @@ This reveals a **fundamental mismatch**: models with best generalization are **n
 
 ![Double descent and BIC comparison](/assets/images/double_descent.jpg)
 
+A comparison of SGD and SGLD in terms of MSE (left). Comparisons of the classical
+AIC with $AIC^+$ in (middle), and the classical BIC with $BIC^+$ in (right)
+
 On this picture BIC exhibits double descent behavior while BIC+ not.
 
 ### Role of the Prior ($\lambda$)
@@ -192,8 +203,8 @@ The prior variance (controlled by $\lambda$) critically shapes behavior:
 
 ![KL divergence vs generalization](/assets/images/kl_div.jpg)
 
-A comparison between the KL-divergence term in BIC+ (left) and the generalization error
- term in AIC+ (right) with varying λ.
+A comparison between the KL-divergence term in $BIC^+$ (left) and the generalization error
+ term in $AIC^+$ (right) with varying λ.
 
 ### Decomposition of BIC⁺ Penalty
 
@@ -208,7 +219,7 @@ The penalty in BIC⁺ splits into:
 - **Classical BIC** incorrectly favors moderate $p$.
 - **Gibbs-based BIC⁺** correctly selects large $p$, aligning with low test error.
 
-![BIC comparison across criteria](/assets/images/BIC_comparison.jpg)
+![BIC comparison across criteria](/assets/images/BIC_comparison.jpg){ align="center" }
 
 A comparison between different BICs in over-parameterized RF model when λ = 0.001
  (left); A comparison between BIC+ (middle) and population risk (right) with varying λ.
