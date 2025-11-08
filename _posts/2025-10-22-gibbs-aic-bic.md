@@ -77,7 +77,7 @@ $$
 
 In practice, samples from this distribution can be obtained via **SGLD** or **MALA**.
 
-![Sample-wise comparison](/assets/images/sample_comparison.jpg){width="800" height="600"}
+![Sample-wise comparison](/assets/images/sample_comparison.jpg)
 
 The training MSE losses of MALA and SGLD are presented on the left image, with a comparative analysis of their $L_2$ norms shown on the right image.
 
