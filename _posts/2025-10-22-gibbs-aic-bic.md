@@ -219,7 +219,7 @@ The penalty in BIC⁺ splits into:
 - **Classical BIC** incorrectly favors moderate $p$.
 - **Gibbs-based BIC⁺** correctly selects large $p$, aligning with low test error.
 
-![BIC comparison across criteria](/assets/images/BIC_comparison.jpg){ align="center" }
+![BIC comparison across criteria](/assets/images/BIC_comparison.jpg){: .center}
 
 A comparison between different BICs in over-parameterized RF model when λ = 0.001
  (left); A comparison between BIC+ (middle) and population risk (right) with varying λ.
