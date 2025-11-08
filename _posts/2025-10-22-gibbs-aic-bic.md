@@ -214,6 +214,10 @@ The penalty in BIC⁺ splits into:
 
 ![Covariance divergence term](/assets/images/cov_div.jpg)
 
+A decomposition of the terms in over-parameterized $BIC^+$ with λ = 0.001 (left),
+and λ = 0.0001(right).
+
+
 ### Model Selection Performance
 
 - **Classical BIC** incorrectly favors moderate $p$.
