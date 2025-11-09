@@ -10,7 +10,7 @@ github_username: papayiv
 markdown: kramdown
 kramdown:
   parse_block_html: true
-remote_theme: pages-themes/minimal@v0.2.0
+remote_theme: pages-themes/hacker@v0.2.0
 plugins:
   - jekyll-remote-theme
   - jekyll-seo-tag
