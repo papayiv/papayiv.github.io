@@ -9,3 +9,8 @@
   display: block;
   margin: 0 auto;
 }
+
+.container {
+    max-width: 90% !important;
+    margin: 0 auto;
+}
