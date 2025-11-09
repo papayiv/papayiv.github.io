@@ -77,7 +77,7 @@ $$
 
 In practice, samples from this distribution can be obtained via **SGLD** or **MALA**.
 
-![Sample-wise comparison](/assets/images/sample_comparison.jpg)
+![Sample-wise comparison](/assets/images/sample_comparison.jpg){: .center}
 
 The training MSE losses of MALA and SGLD are presented on the left image, with a comparative analysis of their $L_2$ norms shown on the right image.
 
@@ -187,7 +187,7 @@ $$
 
 This reveals a **fundamental mismatch**: models with best generalization are **not** those with highest marginal likelihood.
 
-![Double descent and BIC comparison](/assets/images/double_descent.jpg)
+![Double descent and BIC comparison](/assets/images/double_descent.jpg){: .center}
 
 A comparison of SGD and SGLD in terms of MSE (left). Comparisons of the classical
 AIC with $AIC^+$ in (middle), and the classical BIC with $BIC^+$ in (right)
@@ -201,7 +201,7 @@ The prior variance (controlled by $\lambda$) critically shapes behavior:
 - Smaller $\lambda$ → flatter posterior → smaller $\ell_2$ norm → better generalization.
 - But **BIC⁺ penalizes large $\lambda$ more heavily**.
 
-![KL divergence vs generalization](/assets/images/kl_div.jpg)
+![KL divergence vs generalization](/assets/images/kl_div.jpg){: .center}
 
 A comparison between the KL-divergence term in $BIC^+$ (left) and the generalization error
  term in $AIC^+$ (right) with varying λ.
@@ -212,7 +212,7 @@ The penalty in BIC⁺ splits into:
 1. **$\ell_2$ term**: decreases with $p$,
 2. **Covariance term**: captures spectral properties of $B^\top B$.
 
-![Covariance divergence term](/assets/images/cov_div.jpg)
+![Covariance divergence term](/assets/images/cov_div.jpg){: .center}
 
 A decomposition of the terms in over-parameterized $BIC^+$ with λ = 0.001 (left),
 and λ = 0.0001(right).
