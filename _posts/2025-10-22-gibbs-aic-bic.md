@@ -1,3 +1,7 @@
+<style>
+img { display: block; margin: 20px auto; max-width: 90%; }
+</style>
+
 ---
 layout: default
 title: "Gibbs-Based Information Criteria and the Over-Parameterized Regime"
