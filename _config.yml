@@ -2,16 +2,19 @@ title: Papay Ivan
 email: papai.id@phystech.edu
 description: I am a master’s student in Computer Science in the Intelligent Systems Department at Moscow Institute of Physics and Technology. Lurking for any computer science projects that can be honorable challenges for me.
 baseurl: ""
-url: "https://papayiv.github.io"
+url: "https://papayiv.github.io"  # ← уберите пробел в конце!
 
 github_username: papayiv
 
 # Build settings
 markdown: kramdown
 kramdown:
+  syntax_highlighter: rouge
+  syntax_highlighter_opts:
+    css_class: "highlight"
   parse_block_html: true
+
 remote_theme: pages-themes/hacker@v0.2.0
 plugins:
   - jekyll-remote-theme
   - jekyll-seo-tag
-
