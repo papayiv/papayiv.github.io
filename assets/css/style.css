@@ -185,6 +185,29 @@ tr:nth-child(even) td { background: var(--bg-2); }
   margin-bottom: 3rem;
 }
 
+.hero-body {
+  display: flex;
+  align-items: center;
+  gap: 3.5rem;
+}
+
+.hero-text { flex: 1; min-width: 0; }
+
+.hero-photo { flex-shrink: 0; }
+
+.avatar {
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--border);
+  margin: 0;
+  display: block;
+  transition: border-color 0.2s;
+}
+
+.avatar:hover { border-color: var(--accent); }
+
 .hero-label {
   font-family: var(--mono);
   font-size: 0.85rem;
@@ -210,7 +233,6 @@ tr:nth-child(even) td { background: var(--bg-2); }
 .hero-bio {
   font-size: 1.05rem;
   color: var(--text-muted);
-  max-width: 540px;
   line-height: 1.7;
   margin-bottom: 2rem;
 }
@@ -323,7 +345,9 @@ tr:nth-child(even) td { background: var(--bg-2); }
   .nav-container { padding: 0 1rem; }
   .main-content  { padding: 2rem 1rem 4rem; }
   .hero { padding: 2.5rem 0 2rem; }
+  .hero-body { flex-direction: column-reverse; gap: 2rem; align-items: flex-start; }
   .hero-name { font-size: 1.9rem; }
+  .avatar { width: 120px; height: 120px; }
   .nav-links a:not(:last-child) { display: none; }
   .footer-inner { flex-direction: column; gap: 0.4rem; text-align: center; }
 }
