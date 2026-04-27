@@ -4,15 +4,17 @@ title: Posts
 permalink: /posts/
 ---
 
-<h1>Posts</h1>
+<div class="posts-header">
+  <h1>Posts</h1>
+</div>
 
-<ul>
+<ul class="post-list">
   {% for post in site.posts %}
-    <li>
+    <li class="post-card">
+      <div class="post-date">{{ post.date | date: "%Y-%m-%d" }}</div>
       <h2><a href="{{ post.url | relative_url }}">{{ post.title }}</a></h2>
-      <p><small>{{ post.date | date: "%B %d, %Y" }}</small></p>
       {% if post.excerpt %}
-        <p>{{ post.excerpt | strip_html | truncatewords: 25 }}</p>
+        <p class="post-excerpt">{{ post.excerpt | strip_html | truncatewords: 30 }}</p>
       {% endif %}
     </li>
   {% endfor %}
